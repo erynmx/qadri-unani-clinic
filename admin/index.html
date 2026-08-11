@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Qadri Unani Clinic</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        qadri: {
+                            forest: '#1A4B34',
+                            forestDark: '#113322',
+                            ivory: '#FDFBF7',
+                            gold: '#C5A880',
+                            goldDark: '#A68A65',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="text-gray-800 antialiased overflow-hidden">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="fixed inset-0 z-50 bg-qadri-ivory flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-8 fade-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-qadri-forest rounded-lg flex items-center justify-center rotate-45 mx-auto mb-6 border-2 border-qadri-gold">
+                    <span class="text-white text-2xl -rotate-45 font-bold font-serif">Q</span>
+                </div>
+                <h1 class="text-2xl font-bold text-qadri-forest">Clinic Portal Access</h1>
+                <p class="text-sm text-gray-500 mt-2">Enter your admin credentials securely.</p>
+            </div>
+            
+            <form id="login-form" class="space-y-5">
+                <div id="login-error" class="hidden bg-red-50 text-red-600 text-sm p-3 rounded-lg border border-red-100 text-center"></div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-qadri-forest outline-none transition-shadow bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-qadri-forest outline-none transition-shadow bg-gray-50 focus:bg-white">
+                </div>
+                <button type="submit" id="login-btn" class="w-full bg-qadri-forest hover:bg-qadri-forestDark text-white font-medium py-3 rounded-lg transition-colors flex justify-center items-center">
+                    <span>Login Securely</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD LAYOUT -->
+    <div id="dashboard-screen" class="hidden h-screen flex flex-col md:flex-row w-full">
+        
+        <!-- Mobile Header -->
+        <div class="md:hidden bg-qadri-forest text-white p-4 flex justify-between items-center shadow-md z-20">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-white rounded flex items-center justify-center rotate-45 border border-qadri-gold">
+                    <span class="text-qadri-forest text-sm -rotate-45 font-bold font-serif">Q</span>
+                </div>
+                <span class="font-semibold tracking-wide">Qadri Clinic</span>
+            </div>
+            <button id="mobile-menu-btn" class="text-white focus:outline-none"><i class="fas fa-bars text-xl"></i></button>
+        </div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-qadri-forestDark text-white w-64 flex-shrink-0 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30 flex flex-col">
+            <div class="p-6 border-b border-white/10 hidden md:block">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white rounded flex items-center justify-center rotate-45 border border-qadri-gold">
+                        <span class="text-qadri-forest text-xl -rotate-45 font-bold font-serif">Q</span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold tracking-wide">Qadri Clinic</h2>
+                        <p class="text-xs text-qadri-gold">Admin Portal</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-white/10 text-white rounded-lg transition-colors">
+                    <i class="fas fa-calendar-check w-5 text-center text-qadri-gold"></i>
+                    <span class="font-medium">Appointments</span>
+                </a>
+                <!-- Additional nav items can go here -->
+            </nav>
+            <div class="p-4 border-t border-white/10">
+                <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 w-full text-left text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                    <i class="fas fa-sign-out-alt w-5 text-center"></i>
+                    <span class="font-medium">Logout Securely</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden bg-gray-50">
+            <!-- Topbar (Desktop) -->
+            <header class="hidden md:flex justify-between items-center bg-white p-6 border-b border-gray-200 z-10">
+                <h1 class="text-2xl font-semibold text-gray-800">Appointment Management</h1>
+                <div class="flex items-center gap-4 text-sm font-medium text-gray-600">
+                    <span id="current-date"><i class="far fa-calendar-alt mr-2 text-qadri-gold"></i></span>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 hide-scrollbar relative">
+                
+                <!-- Full Screen Loading Overlay -->
+                <div id="loading-overlay" class="absolute inset-0 bg-gray-50/80 z-40 flex items-center justify-center hidden">
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-qadri-forest"></div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-medium">Total</p><p class="text-2xl font-bold text-gray-800" id="stat-total">-</p></div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><i class="fas fa-notes-medical"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-medium">Today</p><p class="text-2xl font-bold text-gray-800" id="stat-today">-</p></div>
+                        <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500"><i class="fas fa-calendar-day"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-medium">Pending</p><p class="text-2xl font-bold text-gray-800" id="stat-pending">-</p></div>
+                        <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-500"><i class="fas fa-clock"></i></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div><p class="text-sm text-gray-500 font-medium">Confirmed</p><p class="text-2xl font-bold text-gray-800" id="stat-confirmed">-</p></div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-500"><i class="fas fa-check-circle"></i></div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="bg-white p-4 rounded-t-xl border border-gray-100 border-b-0 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="relative w-full md:w-1/3">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search-input" placeholder="Search by name or phone..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-qadri-forest text-sm bg-gray-50">
+                    </div>
+                    <div class="flex gap-3 w-full md:w-auto">
+                        <input type="date" id="filter-date" class="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-qadri-forest bg-gray-50 w-full md:w-auto text-gray-600">
+                        <select id="filter-status" class="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-qadri-forest bg-gray-50 w-full md:w-auto text-gray-600">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <button onclick="fetchAppointments()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded-lg transition-colors" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="bg-white rounded-b-xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-gray-50 border-y border-gray-100">
+                                    <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                    <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Patient Info</th>
+                                    <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-gray-100">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="empty-state" class="hidden flex flex-col items-center justify-center py-16 text-center">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-inbox text-3xl text-gray-300"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900">No appointments found</h3>
+                        <p class="text-sm text-gray-500 mt-1">Try adjusting your search or filters.</p>
+                        <button onclick="clearFilters()" class="mt-4 text-qadri-forest text-sm font-medium hover:underline">Clear Filters</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Appointment Details Modal -->
+    <div id="details-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 relative z-10 fade-in flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100">
+                <h3 class="text-xl font-semibold text-gray-800">Appointment Details</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto hide-scrollbar" id="modal-content">
+                <!-- Content injected via JS -->
+            </div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 rounded-b-xl flex justify-end gap-3" id="modal-actions">
+                <!-- Actions injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION
+        // REPLACE this with your actual Render backend URL once deployed.
+        const API_BASE_URL = 'https://qadri-unani-clinic.onrender.com/api'; 
+        
+        // STATE
+        let allAppointments = [];
+        
+        // DOM Elements
+        const loginScreen = document.getElementById('login-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const searchInput = document.getElementById('search-input');
+        const dateFilter = document.getElementById('filter-date');
+        const statusFilter = document.getElementById('filter-status');
+
+        // Set Current Date in Header
+        document.getElementById('current-date').innerHTML += new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // --- AUTHENTICATION ---
+        
+        // Check Auth on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = sessionStorage.getItem('adminToken');
+            if (token) {
+                showDashboard();
+            }
+        });
+
+        // Login Logic
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const errorDiv = document.getElementById('login-error');
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            errorDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    sessionStorage.setItem('adminToken', data.token); // Securely store JWT for this session
+                    showDashboard();
+                } else {
+                    errorDiv.textContent = data.message || 'Invalid credentials';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Connection error. Check backend.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = '<span>Login Securely</span>';
+            }
+        });
+
+        function logout() {
+            sessionStorage.removeItem('adminToken');
+            loginScreen.classList.remove('hidden');
+            dashboardScreen.classList.add('hidden');
+            document.getElementById('password').value = '';
+        }
+
+        function showDashboard() {
+            loginScreen.classList.add('hidden');
+            dashboardScreen.classList.remove('hidden');
+            dashboardScreen.classList.add('flex'); // Ensure flex is restored
+            fetchAppointments();
+        }
+
+        // --- DATA FETCHING & RENDERING ---
+
+        async function fetchAppointments() {
+            const token = sessionStorage.getItem('adminToken');
+            if (!token) return logout();
+
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.status === 401 || response.status === 403) {
+                    return logout(); // Token expired or invalid
+                }
+
+                allAppointments = await response.json();
+                renderDashboard();
+            } catch (err) {
+                alert('Failed to fetch data. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderDashboard() {
+            // Apply Filters
+            const searchTerm = searchInput.value.toLowerCase();
+            const dateVal = dateFilter.value;
+            const statusVal = statusFilter.value;
+
+            let filtered = allAppointments.filter(apt => {
+                const matchSearch = apt.patientName.toLowerCase().includes(searchTerm) || apt.phone.includes(searchTerm);
+                const matchDate = dateVal ? apt.preferredDate === dateVal : true;
+                const matchStatus = statusVal ? apt.status === statusVal : true;
+                return matchSearch && matchDate && matchStatus;
+            });
+
+            updateStats();
+            renderTable(filtered);
+        }
+
+        function updateStats() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            
+            const total = allAppointments.length;
+            const today = allAppointments.filter(a => a.preferredDate === todayStr).length;
+            const pending = allAppointments.filter(a => a.status === 'Pending').length;
+            const confirmed = allAppointments.filter(a => a.status === 'Confirmed').length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-today').textContent = today;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-confirmed').textContent = confirmed;
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+
+                data.forEach(apt => {
+                    const statusConfig = getStatusConfig(apt.status);
+                    
+                    const row = `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="py-3 px-4 border-b border-gray-100">
+                                <p class="text-sm font-medium text-gray-800">${formatDate(apt.preferredDate)}</p>
+                                <p class="text-xs text-gray-500">${apt.preferredTime}</p>
+                            </td>
+                            <td class="py-3 px-4 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-900">${apt.patientName}</p>
+                                <p class="text-xs text-gray-500"><i class="fas fa-phone-alt mr-1 text-gray-400"></i>${apt.phone}</p>
+                            </td>
+                            <td class="py-3 px-4 border-b border-gray-100">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${statusConfig.classes}">
+                                    <i class="fas fa-circle text-[8px] mr-1.5"></i> ${apt.status}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 border-b border-gray-100 text-right">
+                                <button onclick="viewDetails('${apt._id}')" class="text-qadri-forest bg-green-50 hover:bg-green-100 p-2 rounded text-sm transition-colors mr-1" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="confirmDelete('${apt._id}')" class="text-red-500 bg-red-50 hover:bg-red-100 p-2 rounded text-sm transition-colors" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+        }
+
+        // --- ACTIONS & MODAL ---
+
+        function viewDetails(id) {
+            const apt = allAppointments.find(a => a._id === id);
+            if (!apt) return;
+
+            const content = document.getElementById('modal-content');
+            const actions = document.getElementById('modal-actions');
+            const statusConfig = getStatusConfig(apt.status);
+
+            content.innerHTML = `
+                <div class="mb-6 flex justify-between items-start">
+                    <div>
+                        <h4 class="text-2xl font-bold text-gray-900">${apt.patientName}</h4>
+                        <p class="text-sm text-gray-500">Requested on: ${new Date(apt.createdAt).toLocaleString()}</p>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${statusConfig.classes}">
+                        ${apt.status}
+                    </span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Phone</p>
+                        <p class="text-sm font-medium text-gray-800"><a href="tel:${apt.phone}" class="hover:text-qadri-forest transition-colors">${apt.phone}</a></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Email</p>
+                        <p class="text-sm font-medium text-gray-800">${apt.email || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Preferred Date</p>
+                        <p class="text-sm font-medium text-gray-800"><i class="far fa-calendar-alt text-qadri-gold mr-1"></i> ${formatDate(apt.preferredDate)}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Preferred Time</p>
+                        <p class="text-sm font-medium text-gray-800"><i class="far fa-clock text-qadri-gold mr-1"></i> ${apt.preferredTime}</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Patient Concern / Message</p>
+                    <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">${apt.concern}</div>
+                </div>
+            `;
+
+            // Dynamic Action Buttons based on status
+            let buttons = '';
+            if (apt.status === 'Pending') {
+                buttons = `
+                    <button onclick="updateStatus('${apt._id}', 'Cancelled')" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">Decline</button>
+                    <button onclick="updateStatus('${apt._id}', 'Confirmed')" class="px-4 py-2 bg-qadri-forest text-white rounded-lg text-sm font-medium hover:bg-qadri-forestDark">Confirm Appointment</button>
+                `;
+            } else if (apt.status === 'Confirmed') {
+                buttons = `
+                    <button onclick="updateStatus('${apt._id}', 'Cancelled')" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50">Cancel Appointment</button>
+                    <button onclick="updateStatus('${apt._id}', 'Completed')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Mark Completed</button>
+                `;
+            } else {
+                // For Completed or Cancelled, allow reset to Pending (useful for mistakes)
+                buttons = `
+                    <button onclick="updateStatus('${apt._id}', 'Pending')" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">Reset to Pending</button>
+                `;
+            }
+
+            actions.innerHTML = buttons;
+            document.getElementById('details-modal').classList.remove('hidden');
+        }
+
+        async function updateStatus(id, newStatus) {
+            const token = sessionStorage.getItem('adminToken');
+            try {
+                const res = await fetch(`${API_BASE_URL}/appointments/${id}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (res.ok) {
+                    closeModal();
+                    fetchAppointments(); // Refresh data
+                } else {
+                    alert('Failed to update status');
+                }
+            } catch (err) {
+                alert('Connection Error');
+            }
+        }
+
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to permanently delete this appointment record? This action cannot be undone.')) {
+                deleteAppointment(id);
+            }
+        }
+
+        async function deleteAppointment(id) {
+            const token = sessionStorage.getItem('adminToken');
+            try {
+                const res = await fetch(`${API_BASE_URL}/appointments/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.ok) {
+                    fetchAppointments();
+                } else {
+                    alert('Failed to delete');
+                }
+            } catch (err) {
+                alert('Connection Error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('details-modal').classList.add('hidden');
+        }
+
+        // --- UTILS & EVENT LISTENERS ---
+
+        function getStatusConfig(status) {
+            switch(status) {
+                case 'Confirmed': return { classes: 'bg-green-50 text-green-700 border-green-200' };
+                case 'Completed': return { classes: 'bg-blue-50 text-blue-700 border-blue-200' };
+                case 'Cancelled': return { classes: 'bg-red-50 text-red-700 border-red-200' };
+                default: return { classes: 'bg-yellow-50 text-yellow-700 border-yellow-200' }; // Pending
+            }
+        }
+
+        function formatDate(dateString) {
+            if(!dateString) return 'N/A';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loading-overlay');
+            if (show) overlay.classList.remove('hidden');
+            else overlay.classList.add('hidden');
+        }
+
+        function clearFilters() {
+            searchInput.value = '';
+            dateFilter.value = '';
+            statusFilter.value = '';
+            renderDashboard();
+        }
+
+        // Filter Event Listeners
+        searchInput.addEventListener('input', renderDashboard);
+        dateFilter.addEventListener('change', renderDashboard);
+        statusFilter.addEventListener('change', renderDashboard);
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+</body>
+</html>

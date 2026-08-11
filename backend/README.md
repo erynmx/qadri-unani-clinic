@@ -1,4 +1,4 @@
-Qadri Unani Clinic Website & API
+nodeQadri Unani Clinic Website & API
 Directory Structure
 Ensure your project looks exactly like this:
 qadri-unani-clinic/
